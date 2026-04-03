@@ -1,8 +1,17 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { SITE_DESCRIPTION, SITE_TITLE, GITHUB_URL, THREADS_URL } from '../consts';
+import FormattedDate from '../components/FormattedDate.astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const featuredPost = posts[0];
+const recentPosts = posts.slice(1, 3);
 ---
 
 <!doctype html>
@@ -10,40 +19,307 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
-	<body>
+	<body class="antialiased bg-white text-dark-text">
 		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+
+		<main id="home">
+			<!-- Hero Section -->
+			<section class="min-h-screen flex items-center pt-32 pb-20">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+						<div class="space-y-8 text-center lg:text-left">
+							<h1 class="text-5xl md:text-7xl font-bold text-dark-text tracking-tight leading-tight">
+								Architecting <br />
+								<span class="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary">High Availability</span> Cloud Systems.
+							</h1>
+							<p class="text-lg text-dark-text/70 max-w-xl leading-relaxed mx-auto lg:mx-0">
+								I'm Steven (鄭棋文), a Senior Cloud Architect. I specialize in designing resilient cloud infrastructures, optimizing DevOps workflows, and mastering CI/CD pipelines to deliver speed and stability.
+							</p>
+							<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+								<a href="#blog" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-primary hover:bg-orange-700 transition-all shadow-lg hover:shadow-primary/40 no-underline">
+									View My Blog
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 h-4 w-4"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+								</a>
+								<a href="#contact" class="inline-flex items-center justify-center px-8 py-3 border border-border-light text-base font-medium rounded-lg text-dark-text hover:bg-black/5 transition-all no-underline">
+									Contact Me
+								</a>
+							</div>
+							<div class="flex items-center gap-6 pt-4 justify-center lg:justify-start">
+								<a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="text-dark-text/50 hover:text-primary transition-colors">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="h-6 w-6"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg>
+								</a>
+								<a href={THREADS_URL} target="_blank" rel="noopener noreferrer" class="text-dark-text/50 hover:text-primary transition-colors">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="h-6 w-6"><title>Threads</title><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"></path></svg>
+								</a>
+							</div>
+						</div>
+						<div class="relative hidden lg:block">
+							<div class="relative z-10 w-full max-w-md mx-auto aspect-square rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+								<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-primary/40">
+									<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+								</svg>
+							</div>
+							<div class="absolute -bottom-6 -right-6 z-20 bg-white border border-border-light p-4 rounded-xl shadow-lg flex items-center gap-4">
+								<div class="bg-primary/10 p-2 rounded-full text-primary">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+								</div>
+								<div>
+									<p class="text-xs text-dark-text/60">Uptime</p>
+									<p class="text-lg font-bold text-dark-text">99.99%</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- About Section -->
+			<section id="about" class="py-24 bg-light-background">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+					<div class="text-center mb-16">
+						<h2 class="text-3xl md:text-4xl font-bold text-dark-text mb-4">About Me</h2>
+						<div class="h-1 w-20 bg-primary mx-auto rounded-full"></div>
+						<p class="mt-4 text-dark-text/70 max-w-2xl mx-auto">
+							I architect scalable, secure, and cost-effective cloud solutions. My obsession is automating the boring stuff so teams can focus on innovation.
+						</p>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+						<!-- Cloud Architecture Card -->
+						<div class="bg-white p-6 rounded-2xl border border-border-light shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
+							<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+							</div>
+							<h3 class="text-xl font-semibold text-dark-text mb-4">Cloud Architecture</h3>
+							<ul class="space-y-2">
+								{['AWS', 'Azure', 'GCP', 'Hybrid Cloud', 'Serverless'].map(item => (
+									<li class="flex items-center text-dark-text/70 text-sm">
+										<span class="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>{item}
+									</li>
+								))}
+							</ul>
+						</div>
+
+						<!-- DevOps & IaC Card -->
+						<div class="bg-white p-6 rounded-2xl border border-border-light shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
+							<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary"><path d="M12 19h8"></path><path d="m4 17 6-6-6-6"></path></svg>
+							</div>
+							<h3 class="text-xl font-semibold text-dark-text mb-4">DevOps & IaC</h3>
+							<ul class="space-y-2">
+								{['Terraform', 'Ansible', 'Kubernetes', 'Docker', 'Helm'].map(item => (
+									<li class="flex items-center text-dark-text/70 text-sm">
+										<span class="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>{item}
+									</li>
+								))}
+							</ul>
+						</div>
+
+						<!-- CI/CD Card -->
+						<div class="bg-white p-6 rounded-2xl border border-border-light shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
+							<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary"><line x1="6" x2="6" y1="3" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>
+							</div>
+							<h3 class="text-xl font-semibold text-dark-text mb-4">CI / CD</h3>
+							<ul class="space-y-2">
+								{['Jenkins', 'GitLab CI', 'GitHub Actions', 'ArgoCD', 'CircleCI'].map(item => (
+									<li class="flex items-center text-dark-text/70 text-sm">
+										<span class="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>{item}
+									</li>
+								))}
+							</ul>
+						</div>
+
+						<!-- Security & Ops Card -->
+						<div class="bg-white p-6 rounded-2xl border border-border-light shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 hover:-translate-y-1">
+							<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>
+							</div>
+							<h3 class="text-xl font-semibold text-dark-text mb-4">Security & Ops</h3>
+							<ul class="space-y-2">
+								{['IAM Policies', 'Prometheus', 'Grafana', 'ELK Stack', 'DevSecOps'].map(item => (
+									<li class="flex items-center text-dark-text/70 text-sm">
+										<span class="w-1.5 h-1.5 bg-primary rounded-full mr-2"></span>{item}
+									</li>
+								))}
+							</ul>
+						</div>
+					</div>
+
+					<!-- Why work with me -->
+					<div class="mt-20 bg-white rounded-3xl p-8 md:p-12 border border-border-light relative overflow-hidden shadow-md">
+						<div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+							<div>
+								<h3 class="text-2xl font-bold text-dark-text mb-4">Why work with me?</h3>
+								<p class="text-dark-text/70 mb-6 leading-relaxed">
+									I don't just provision servers; I build resilience. With a deep focus on <strong>High Availability</strong> and <strong>Disaster Recovery</strong>, I ensure your business stays online no matter what.
+								</p>
+								<p class="text-dark-text/70 leading-relaxed">
+									I am passionate about <span class="text-primary font-medium">DevOps culture</span>. I believe in empowering development teams with self-service infrastructure and automated pipelines (CI/CD) that remove bottlenecks and accelerate deployment velocity.
+								</p>
+							</div>
+							<div class="bg-light-background p-6 rounded-xl border border-border-light">
+								<code class="text-sm font-mono text-dark-text/70">
+									<span class="text-purple-600">resource</span> <span class="text-green-600">"cloud_architect"</span> <span class="text-orange-500">"steven"</span> <span class="text-orange-500">{"{"}</span><br />
+									&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="text-green-600">"Steven Cheng"</span><br />
+									&nbsp;&nbsp;specialty&nbsp;&nbsp;= <span class="text-green-600">"High Availability"</span><br />
+									&nbsp;&nbsp;tools&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= [<span class="text-green-600">"Terraform"</span>, <span class="text-green-600">"K8s"</span>]<br /><br />
+									&nbsp;&nbsp;<span class="text-purple-600">provisioner</span> <span class="text-green-600">"local-exec"</span> <span class="text-orange-500">{"{"}</span><br />
+									&nbsp;&nbsp;&nbsp;&nbsp;command = <span class="text-green-600">"optimize_pipelines.sh"</span><br />
+									&nbsp;&nbsp;<span class="text-orange-500">{"}"}</span><br />
+									<span class="text-orange-500">{"}"}</span>
+								</code>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Tech Insights / Blog Section -->
+			<section id="blog" class="py-24 bg-white">
+				<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+					<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+						<div>
+							<h2 class="text-3xl md:text-4xl font-bold text-dark-text mb-4">Tech Insights</h2>
+							<div class="h-1 w-20 bg-primary rounded-full mb-4"></div>
+							<p class="text-dark-text/70 max-w-2xl">Deep dives into Cloud Architecture, DevOps patterns, and Engineering culture.</p>
+						</div>
+						<a href="/blog" class="flex items-center text-primary hover:text-orange-700 transition-colors font-medium group no-underline">
+							View all articles
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+						</a>
+					</div>
+
+					<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+						<!-- Featured Post -->
+						{featuredPost && (
+							<a href={`/blog/${featuredPost.id}/`} class="lg:col-span-2 group cursor-pointer no-underline block">
+								<div class="relative rounded-2xl overflow-hidden border border-border-light shadow-sm group-hover:shadow-xl transition-all h-80 md:h-96 bg-gradient-to-br from-primary/10 to-secondary/10 flex items-end">
+									<div class="absolute top-4 left-4 z-10">
+										<span class="px-3 py-1 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded-full">Featured</span>
+									</div>
+									<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+									<div class="relative z-10 p-8">
+										<div class="flex items-center text-white/80 text-sm mb-3 space-x-4">
+											<span><FormattedDate date={featuredPost.data.pubDate} /></span>
+										</div>
+										<h3 class="text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-secondary transition-colors">{featuredPost.data.title}</h3>
+										<p class="text-white/90 line-clamp-2 max-w-2xl">{featuredPost.data.description}</p>
+									</div>
+								</div>
+							</a>
+						)}
+
+						<!-- Recent Posts Sidebar -->
+						<div class="lg:col-span-1 space-y-6">
+							<h3 class="text-lg font-bold text-dark-text border-b border-border-light pb-2">Recent Posts</h3>
+							{recentPosts.map(post => (
+								<a href={`/blog/${post.id}/`} class="group cursor-pointer bg-white p-5 rounded-xl border border-border-light hover:border-primary/40 transition-all shadow-sm hover:shadow-md block no-underline">
+									<div class="flex items-center justify-between mb-2">
+										<span class="text-xs text-dark-text/50"><FormattedDate date={post.data.pubDate} /></span>
+									</div>
+									<h4 class="text-lg font-bold text-dark-text mb-2 group-hover:text-primary transition-colors line-clamp-2">{post.data.title}</h4>
+									<p class="text-dark-text/70 text-sm line-clamp-2">{post.data.description}</p>
+								</a>
+							))}
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Public Speaking Section -->
+			<section id="speak" class="py-24 bg-light-background relative overflow-hidden">
+				<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+					<div class="text-center mb-16">
+						<div class="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-6">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6 text-primary"><path d="M12 19v3"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><rect x="9" y="2" width="6" height="13" rx="3"></rect></svg>
+						</div>
+						<h2 class="text-3xl md:text-4xl font-bold text-dark-text mb-4">Public Speaking</h2>
+						<p class="text-dark-text/70">Sharing knowledge and experiences at conferences and meetups.</p>
+					</div>
+
+					<div class="space-y-6">
+						<!-- Talk 1 -->
+						<div class="group bg-white hover:bg-stone-50 rounded-xl p-6 border border-border-light hover:border-primary/30 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start sm:items-center shadow-sm hover:shadow-lg">
+							<div class="shrink-0 w-16 h-16 bg-light-background rounded-lg flex flex-col items-center justify-center border border-border-light text-center">
+								<span class="text-xs text-dark-text/50 uppercase font-bold">Sep</span>
+								<span class="text-lg font-bold text-dark-text">2023</span>
+							</div>
+							<div class="grow">
+								<div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-1">
+									<h3 class="text-lg font-bold text-dark-text group-hover:text-primary transition-colors">Scaling Kubernetes Federation to 10M Users</h3>
+									<span class="text-xs px-2 py-0.5 rounded border border-purple-500/30 text-purple-600 bg-purple-500/10">Conference</span>
+								</div>
+								<p class="text-dark-text/80 font-medium mb-2">DevOpsDays Taipei 2023</p>
+								<div class="flex items-center text-dark-text/50 text-sm">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 mr-1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+									Taipei, Taiwan
+								</div>
+							</div>
+						</div>
+
+						<!-- Talk 2 -->
+						<div class="group bg-white hover:bg-stone-50 rounded-xl p-6 border border-border-light hover:border-primary/30 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start sm:items-center shadow-sm hover:shadow-lg">
+							<div class="shrink-0 w-16 h-16 bg-light-background rounded-lg flex flex-col items-center justify-center border border-border-light text-center">
+								<span class="text-xs text-dark-text/50 uppercase font-bold">Jun</span>
+								<span class="text-lg font-bold text-dark-text">2023</span>
+							</div>
+							<div class="grow">
+								<div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-1">
+									<h3 class="text-lg font-bold text-dark-text group-hover:text-primary transition-colors">Serverless Patterns for High Availability</h3>
+									<span class="text-xs px-2 py-0.5 rounded border border-purple-500/30 text-purple-600 bg-purple-500/10">Conference</span>
+								</div>
+								<p class="text-dark-text/80 font-medium mb-2">AWS Community Day</p>
+								<div class="flex items-center text-dark-text/50 text-sm">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 mr-1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+									Taichung, Taiwan
+								</div>
+							</div>
+						</div>
+
+						<!-- Talk 3 -->
+						<div class="group bg-white hover:bg-stone-50 rounded-xl p-6 border border-border-light hover:border-primary/30 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start sm:items-center shadow-sm hover:shadow-lg">
+							<div class="shrink-0 w-16 h-16 bg-light-background rounded-lg flex flex-col items-center justify-center border border-border-light text-center">
+								<span class="text-xs text-dark-text/50 uppercase font-bold">Apr</span>
+								<span class="text-lg font-bold text-dark-text">2023</span>
+							</div>
+							<div class="grow">
+								<div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-1">
+									<h3 class="text-lg font-bold text-dark-text group-hover:text-primary transition-colors">Ep. 42: The Future of Platform Engineering</h3>
+									<span class="text-xs px-2 py-0.5 rounded border border-orange-500/30 text-orange-600 bg-orange-500/10">Podcast</span>
+								</div>
+								<p class="text-dark-text/80 font-medium mb-2">Cloud Native Podcast</p>
+								<div class="flex items-center text-dark-text/50 text-sm">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 mr-1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+									Online
+								</div>
+							</div>
+						</div>
+
+						<!-- Talk 4 -->
+						<div class="group bg-white hover:bg-stone-50 rounded-xl p-6 border border-border-light hover:border-primary/30 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start sm:items-center shadow-sm hover:shadow-lg">
+							<div class="shrink-0 w-16 h-16 bg-light-background rounded-lg flex flex-col items-center justify-center border border-border-light text-center">
+								<span class="text-xs text-dark-text/50 uppercase font-bold">Dec</span>
+								<span class="text-lg font-bold text-dark-text">2022</span>
+							</div>
+							<div class="grow">
+								<div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-1">
+									<h3 class="text-lg font-bold text-dark-text group-hover:text-primary transition-colors">From Monolith to Microservices: A Survival Guide</h3>
+									<span class="text-xs px-2 py-0.5 rounded border border-purple-500/30 text-purple-600 bg-purple-500/10">Conference</span>
+								</div>
+								<p class="text-dark-text/80 font-medium mb-2">Modern Web Conference</p>
+								<div class="flex items-center text-dark-text/50 text-sm">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-3.5 w-3.5 mr-1.5"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+									Taipei, Taiwan
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		</main>
+
 		<Footer />
+		<SpeedInsights />
 	</body>
 </html>

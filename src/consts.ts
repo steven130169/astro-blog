@@ -1,5 +1,6 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
-
-export const SITE_TITLE = 'Astro Blog';
-export const SITE_DESCRIPTION = 'Welcome to my website!';
+export const SITE_TITLE = 'Steven.Tech.Lab';
+export const SITE_DESCRIPTION = 'Portfolio of Steven Cheng, a Senior Cloud Architect specializing in High Availability and DevOps.';
+export const AUTHOR_NAME = 'Steven Cheng (鄭棋文)';
+export const AUTHOR_EMAIL = 'steven@chiwencheng.com';
+export const GITHUB_URL = 'https://github.chiwencheng.com';
+export const THREADS_URL = 'https://thread.chiwencheng.com';
