@@ -1,0 +1,78 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE, CALCOM_URL } from '../consts';
+
+const calLink = CALCOM_URL ? CALCOM_URL.replace('https://cal.com/', '') : 'steven.cheng';
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <BaseHead title={`Book a Session | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+    </head>
+    <body class="antialiased bg-white text-dark-text">
+        <Header />
+        
+        <main class="pt-24">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                
+                <div class="mb-12">
+                    <h1 class="text-3xl md:text-4xl font-bold text-dark-text mb-4">Book a Consultation</h1>
+                    <div class="h-1 w-20 bg-primary rounded-full"></div>
+                </div>
+                
+                <div 
+                    id="my-cal-inline" 
+                    class="w-full min-h-[600px] transition-all duration-300"
+                >
+                </div>
+                
+            </div>
+        </main>
+        
+        <Footer />
+
+        <script is:inline define:vars={{ calLink }}>
+          window.Cal = window.Cal || function () {
+            let cal = window.Cal;
+            let ar = arguments;
+            if (!cal.q) { cal.q = []; }
+            cal.q.push(ar);
+          };
+          window.Cal.q = window.Cal.q || [];
+
+          window.Cal.ns = window.Cal.ns || {};
+          window.Cal.ns.ui = window.Cal.ns.ui || function () {
+            let nsQueue = window.Cal.ns.ui;
+            if (!nsQueue.q) { nsQueue.q = []; }
+            nsQueue.q.push(arguments);
+          };
+          window.Cal.ns.ui.q = window.Cal.ns.ui.q || [];
+
+          window.Cal("init", "ui", { elementOrSelector: "#my-cal-inline" });
+          window.Cal.ns.ui("ui", { "theme": "light" });
+
+          window.Cal.ns.ui("inline", {
+            calLink: calLink,
+            elementOrSelector: "#my-cal-inline",
+            config: { "layout": "month_view" }
+          });
+
+          const script = document.createElement("script");
+          script.src = "https://app.cal.com/embed/embed.js";
+          script.async = true;
+          document.head.appendChild(script);
+        </script>
+    </body>
+</html>
+
+<style is:global>
+  #my-cal-inline iframe {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 600px;
+    border: none;
+  }
+</style>
